@@ -1,0 +1,28 @@
+services:
+  mongodb:
+    image: mongo:latest
+    restart: always
+    ports:
+      - 27072:27017
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=pass
+    networks:
+      - shared-net
+  
+  api_service:
+    image: otio:latest
+    restart: always
+    environment:
+      - SPRING_DATA_MONGODB_URI=mongodb://admin:pass@mongodb:27017
+      - SPRING_DATA_MONGODB_DATABASE=otio_db
+    ports:
+      - 6846:8080
+    depends_on:
+      - mongodb
+    networks:
+      - shared-net
+
+networks:
+  shared-net:
+    driver: bridge
